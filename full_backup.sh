@@ -5,11 +5,11 @@ CHECK_FILESYS1=false
 CHECK_FILESYS2=false
 
 
-TO_SAVE=''
-TO_BCKP=''
+DIR_BACKUP=''
+DIR_SOURCE=''
 
-CHECK_TOSAVE=false
-CHECK_TOBCKP=false
+CHECK_SOURCE=false
+CHECK_DIR=false
 
 NAME=''
 CHECK_NAME=false
@@ -19,14 +19,34 @@ DATE=$(date +%Y-%m-%d)
 
 help_menu(){
 
-	echo "menu de ayuda";
+	echo -e "-a) Recibe direccion del filesystem de origen.\n 
+-b) Recibe direccion del filesystem de destino.\n
+-c) Recibe direccion del directorio donde se guardara el backup.\n
+-d) Recibe direccion del directorio del que se hara un backup.\n
+-n) Recibe el nombre del backup.\n
+-h) Imprime el menu de ayuda."
 }
 
 
-check_filesystems(){
+check_directory(){
+
+	local DIR=$1
+
+	if [ -d "$DIR" ]
+	then	
+		return 0
+	else 
+		return 1
+	fi
+}
 
 
-	if mountpoint -q "$1" && mountpoint -q "$2";
+
+check_filesystem(){
+	
+	local FILESYS=$1
+
+	if mountpoint -q "$FILESYS";
 	then
 		return 0
 		
@@ -43,12 +63,13 @@ do_backup(){
 
 	local DIR_BACKUP=$1
 	local DIR_SOURCE=$2
-	local FILESYS_SOURCE=$3
-	local FILESYS_BACKUP=$4
+	local FILESYS1=$3
+	local FILESYS2=$4
 	local NAME=$5
 	
 	
-	if check_filesystems "$FILESYS_SOURCE" "$FILESYS_BACKUP";
+	if check_filesystem "$FILESYS1" && check_filesystem "$FILESYS2"
+	   check_directory "$DIR_BACKUP" && check_directory "$DIR_SOURCE";
 	then
 		tar -cvzpf $DIR_BACKUP/$NAME-backup_$DATE.tar.gz $DIR_SOURCE;
 	fi
@@ -67,11 +88,11 @@ do
 		b) FILESYS2="${OPTARG}"
 		   CHECK_FILESYS2=true;;
 		
-		c) TO_SAVE="${OPTARG}"
-		   CHECK_TOSAVE=true;;
+		c) DIR_BACKUP="${OPTARG}"
+		   CHECK_BACKUP=true;;
 
-		d) TO_BCKP="${OPTARG}"
-		   CHECK_TOBCKP=true;;
+		d) DIR_SOURCE="${OPTARG}"
+		   CHECK_SOURCE=true;;
 		
 		n) NAME="${OPTARG}"
 		   CHECK_NAME=true;;
@@ -81,10 +102,10 @@ do
 done
 
 
-if [ "$CHECK_TOSAVE" = true ] && [ "$CHECK_TOBCKP" = true ] && [ "$CHECK_FILESYS1" = true ] &&
+if [ "$CHECK_BACKUP" = true ] && [ "$CHECK_SOURCE" = true ] && [ "$CHECK_FILESYS1" = true ] &&
 [ "$CHECK_FILESYS2" = true ] && [ "$CHECK_NAME" = true ]; 
 then
-	do_backup "$TO_SAVE" "$TO_BCKP" "$FILESYS1" "$FILESYS2" "$NAME";
+	do_backup "$DIR_BACKUP" "$DIR_SOURCE" "$FILESYS1" "$FILESYS2" "$NAME";
 
 fi
 
