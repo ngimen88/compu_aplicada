@@ -13,8 +13,7 @@ FERIADOS_LUNESCERCANO=('06-17' '10-12' '11-20')
 
 FERIADOS_TERCERLUNES=('08-17')
 
-LUNES_CERCANO_DSCR=('Guemes' 'Inmortalidad Gerneral Martin Miguel de Guemes' 'Dia del Respeto a la diversidad
-cultural')
+LUNES_CERCANO_DSCR=('Guemes' 'Dia del Respeto a la diversidad cultural' 'Dia de la Sobernia') 
 
 TERCER_LUNES_DSCR=('Paso a la inmortalidad del General Jose de San Martin')
 
